@@ -94,32 +94,36 @@
     </div>
 </div>
 
+<!-- MODAL HISTORIAL DE PRÉSTAMOS -->
+<div id="historyModal" class="modal">
+    <div class="modal-card" style="max-width: 650px; width: 90%;">
+        <h3><i class="fas fa-history" style="color:var(--green)"></i> Historial: <span id="history-tool-name" style="color:var(--blue)"></span></h3>
+        <div style="margin-top: 18px; max-height: 320px; overflow-y: auto; border: 1px solid var(--border-light); border-radius: 16px; padding: 6px 12px;">
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Empleado</th>
+                        <th>Carnet</th>
+                        <th>Inicio</th>
+                        <th>Vence / Fin</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+        <div class="modal-buttons" style="margin-top: 20px;">
+            <button class="btn btn-outline" id="close-history-modal">Cerrar</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    // ======================== DATOS DE EJEMPLO ==========================
-    // Herramientas
-    let herramientas = [
-        { id: 1, codigo: "H-001", nombre: "Taladro percutor", categoria: "Eléctrica", estado: "Disponible", titular: "Bodega" },
-        { id: 2, codigo: "H-002", nombre: "Sierra circular", categoria: "Eléctrica", estado: "Prestado", titular: "Carlos Ruiz" },
-        { id: 3, codigo: "H-003", nombre: "Llave de impacto", categoria: "Neumática", estado: "Disponible", titular: "Bodega" },
-        { id: 4, codigo: "H-004", nombre: "Amoladora angular", categoria: "Eléctrica", estado: "Prestado", titular: "Laura Gómez" },
-        { id: 5, codigo: "H-005", nombre: "Cinta métrica láser", categoria: "Medición", estado: "Disponible", titular: "Bodega" },
-        { id: 6, codigo: "H-006", nombre: "Compresor 50L", categoria: "Neumática", estado: "Mantenimiento", titular: "Taller" },
-        { id: 7, codigo: "H-007", nombre: "Atornillador eléctrico", categoria: "Eléctrica", estado: "Disponible", titular: "Bodega" },
-        { id: 8, codigo: "H-008", nombre: "Nivel láser", categoria: "Medición", estado: "Disponible", titular: "Bodega" },
-        { id: 9, codigo: "H-009", nombre: "Hidrolavadora", categoria: "Limpieza", estado: "Disponible", titular: "Bodega" },
-        { id: 10, codigo: "H-010", nombre: "Martillo demoledor", categoria: "Eléctrica", estado: "Prestado", titular: "Jorge Méndez" }
-    ];
+    // ======================== DATOS REALES DE LA BASE DE DATOS ==========================
+    let herramientas = @json($herramientas);
+    let prestamos = @json($prestamos);
 
-    // Préstamos (incluye algunos devueltos y activos)
-    let prestamos = [
-        { id: 1, empleado: "Carlos Ruiz", carnet: "CR001", herramientaId: 2, herramientaNombre: "Sierra circular", inicio: "2025-05-10", vence: "2025-06-07", estado: "activo" },
-        { id: 2, empleado: "Laura Gómez", carnet: "LG002", herramientaId: 4, herramientaNombre: "Amoladora angular", inicio: "2025-05-12", vence: "2025-06-09", estado: "activo" },
-        { id: 3, empleado: "Jorge Méndez", carnet: "JM003", herramientaId: 10, herramientaNombre: "Martillo demoledor", inicio: "2025-05-18", vence: "2025-06-15", estado: "activo" },
-        { id: 4, empleado: "Ana Pereira", carnet: "AP004", herramientaId: 7, herramientaNombre: "Atornillador eléctrico", inicio: "2025-04-01", vence: "2025-04-28", estado: "devuelto" },
-        { id: 5, empleado: "Roberto Díaz", carnet: "RD005", herramientaId: 5, herramientaNombre: "Cinta métrica láser", inicio: "2025-05-01", vence: "2025-05-28", estado: "devuelto" }
-    ];
-
-    let nextToolId = 11;
+    let nextToolId = herramientas.length > 0 ? Math.max(...herramientas.map(h => h.id)) + 1 : 1;
 
     // Helper: obtener herramientas disponibles (estado === "Disponible")
     function getAvailableTools() {
@@ -198,11 +202,45 @@
                 <td><span class="estado-badge" style="background:#f1f5f9;">${h.estado}</span></td>
                 <td>${h.titular || '—'}</td>
                 <td class="action-icons">
+                    <i class="fas fa-history" style="color:#10b981" onclick="verHistorial(${h.id})" title="Ver Historial de Préstamos"></i>
                     <i class="fas fa-edit" style="color:#2563eb" onclick="editarHerramienta(${h.id})" title="Editar"></i>
                     <i class="fas fa-trash-alt" style="color:#ef4444" onclick="eliminarHerramienta(${h.id})" title="Eliminar"></i>
                 </td>
             </tr>
         `).join("");
+    }
+
+    // Historial global
+    window.verHistorial = function(toolId) {
+        const tool = herramientas.find(h => h.id === toolId);
+        if(!tool) return;
+
+        document.getElementById("history-tool-name").innerText = tool.nombre;
+        
+        // Buscar préstamos que tengan el ID o el nombre de esta herramienta
+        const hist = prestamos.filter(p => p.herramientaId === toolId || p.herramientaNombre.toLowerCase() === tool.nombre.toLowerCase());
+        
+        const tbody = document.getElementById("history-body");
+        tbody.innerHTML = hist.map(p => {
+            let estadoHtml = p.estado === "activo" 
+                ? '<span class="estado-badge activo-badge"><i class="fas fa-hourglass-half"></i> Activo</span>' 
+                : '<span class="estado-badge devuelto-badge"><i class="fas fa-check-circle"></i> Devuelto</span>';
+            return `
+                <tr>
+                    <td><strong>${p.empleado}</strong></td>
+                    <td>${p.carnet}</td>
+                    <td>${p.inicio}</td>
+                    <td>${p.vence}</td>
+                    <td>${estadoHtml}</td>
+                </tr>
+            `;
+        }).join("");
+
+        if(hist.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 24px; color: var(--text-muted);"><i class="fas fa-info-circle"></i> Esta herramienta aún no cuenta con historial de préstamos.</td></tr>';
+        }
+
+        document.getElementById("historyModal").style.display = "flex";
     }
 
     // CRUD funciones globales
@@ -307,10 +345,18 @@
 
     function setupModal() {
         const modal = document.getElementById("toolModal");
+        const historyModal = document.getElementById("historyModal");
+        
         document.getElementById("open-add-modal").addEventListener("click", openAdd);
         document.getElementById("close-modal").addEventListener("click", () => modal.style.display = "none");
         document.getElementById("save-tool-btn").addEventListener("click", guardarHerramienta);
-        window.onclick = (e) => { if(e.target === modal) modal.style.display = "none"; };
+        
+        document.getElementById("close-history-modal").addEventListener("click", () => historyModal.style.display = "none");
+        
+        window.onclick = (e) => { 
+            if(e.target === modal) modal.style.display = "none"; 
+            if(e.target === historyModal) historyModal.style.display = "none"; 
+        };
     }
 
     // inicialización total

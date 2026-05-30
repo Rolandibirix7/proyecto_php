@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('herramientas', function (Blueprint $table) {
             $table->id();
-            $table->string('codigo_inventario')->unique();
+            $table->string('codigo')->unique();
             $table->string('nombre');
             $table->string('categoria');
-            $table->enum('estado', ['disponible', 'En Prestamo', ' Mantenimiento'])->default('disponible');
-            $table->string('Titular_Actual')->nullable();
+            $table->enum('estado', ['disponible', 'prestado', 'mantenimiento'])->default('disponible');
+            $table->string('titular')->nullable()->default('Bodega');
             $table->timestamps();
         });
     }
@@ -30,7 +30,3 @@ return new class extends Migration
         Schema::dropIfExists('herramientas');
     }
 };
-
-
-
-

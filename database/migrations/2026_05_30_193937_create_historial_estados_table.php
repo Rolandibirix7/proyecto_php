@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('historial_estados', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('herramienta_id')->constrained();
-            $table->foreignId('user_id')->nullable()->constrained(); // quién reportó
+            $table->foreignId('herramienta_id')->constrained('herramientas')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->text('descripcion_estado');
             $table->enum('tipo', ['bueno', 'regular', 'dañado']);
             $table->date('fecha_reporte');

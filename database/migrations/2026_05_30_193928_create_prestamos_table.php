@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('prestamos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('herramienta_id')->constrained();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('herramienta_id')->constrained('herramientas')->onDelete('cascade');
             $table->date('fecha_prestamo');
             $table->date('fecha_devolucion_esperada');
             $table->date('fecha_devolucion_real')->nullable();
             $table->enum('estado', ['activo', 'devuelto', 'retrasado'])->default('activo');
+            $table->string('plazo')->nullable();
             $table->text('observaciones')->nullable();
             $table->timestamps();
         });

@@ -1,0 +1,153 @@
+/* ========================================
+   LISTA / CATÁLOGO PAGE STYLES
+   ======================================== */
+
+/* Form wrapper for loan request */
+.form-wrap {
+    max-width: 550px;
+    margin: 40px auto;
+    background: var(--card-white);
+    padding: 30px;
+    border-radius: 24px;
+    border: 1px solid var(--border-light);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+}
+.form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+.form-sub {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+.divider {
+    border: 0;
+    border-top: 1px solid var(--border-light);
+    margin: 20px 0;
+}
+.field {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.field label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.field input, .field select, .field textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--border-light);
+    font-family: inherit;
+    font-size: 0.9rem;
+    background: var(--gray-light);
+    transition: all 0.2s ease;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* Topbar */
+.topbar {
+    height: 54px;
+    background: var(--card-white, #ffffff);
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+.topbar-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Search */
+.search-wrap {
+    position: relative;
+}
+.search-wrap i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 14px;
+    pointer-events: none;
+}
+.search-wrap input {
+    background: var(--gray-light, #f1f5f9);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 8px 12px 8px 34px;
+    outline: none;
+    width: 240px;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+}
+.search-wrap input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Filter badges for lista */
+.filter-badges {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.filter-badges a {
+    text-decoration: none;
+}
+
+/* Alert messages */
+.alert {
+    padding: 12px 18px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.alert-success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+.alert-error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
